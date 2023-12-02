@@ -68,9 +68,9 @@ function index() {
 					<li className={`sidebar--item ${activeTab === 'onboarding' ? 'sidebar--active' : ''}`} onClick={() => changeTab("onboarding")} >
 						<TbUsersPlus className="sidebar--icon" /> Onboard Vendors
 					</li>
-					<li className={`sidebar--item ${activeTab === 'settings' ? 'sidebar--active' : ''}`} onClick={() => changeTab("settings")} >
+					{/* <li className={`sidebar--item ${activeTab === 'settings' ? 'sidebar--active' : ''}`} onClick={() => changeTab("settings")} >
 						<RxGear className="sidebar--icon" /> Settings
-					</li>
+					</li> */}
 				</ul>
 			</menu>
 
@@ -92,7 +92,7 @@ function index() {
 					{activeTab === "wishlist" && <WishlishTable />}
 					{activeTab === "gifting" && <GiftingTable />}
 					{activeTab === "onboarding" && <OnboardingVendors />}
-					{activeTab === "settings" && <Settings />}
+					{/* {activeTab === "settings" && <Settings />} */}
 				</section>
 			</div>
 		</main>

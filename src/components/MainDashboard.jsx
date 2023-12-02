@@ -5,7 +5,8 @@ import { AiOutlineShop } from "react-icons/ai";
 import { IoAlarmOutline } from "react-icons/io5";
 import { GoGift } from "react-icons/go";
 import { HiOutlineUsers, HiOutlineShoppingBag } from "react-icons/hi2";
-// import ChartComponent from "./ChartComponent";
+import { LuPackageOpen } from "react-icons/lu";
+
 import TransactionTable from "./TransactionTable";
 
 
@@ -18,6 +19,7 @@ function MainDashboard() {
     const [giftings, setGiftings] = useState([]);
     const [wishLists, setWishLists] = useState([]);
     const [giftProducts, setGiftProducts] = useState([]);
+    const [orders, setOrders] = useState([]);
     const vendors = users?.filter(user => user.role === 'vendor');
     
     useEffect(function() {
@@ -121,6 +123,13 @@ function MainDashboard() {
                         <span className="insight__details">
                             <p>WishLists</p>
                             <p>{wishLists.length}</p>
+                        </span>
+                    </div>
+                    <div className="insight">
+                        <span className="insight__icon"><LuPackageOpen className="icon" /></span>
+                        <span className="insight__details">
+                            <p>Orders</p>
+                            <p>{orders.length}</p>
                         </span>
                     </div>
                 </div>

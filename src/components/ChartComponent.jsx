@@ -14,7 +14,7 @@ function ChartComponent({ deposits, withdrawals, subscriptions, giftings }) {
 			name: "Deposits",
 			// pending: 400,
 			// amt: 2400,
-			Transactions: deposits ,
+			Transactions: deposits,
 		},
 		{
 			name: "Subscription",
