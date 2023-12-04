@@ -73,7 +73,7 @@ function UsersTable() {
       selector: row => {
         return (
           <div className='table-flex table-image-user'>
-            <img src={row.image} alt={row.username} />
+            <img src={row.image} alt={row.fullName.split(' ')[0] || row.username} />
             <p>{row.username}</p>
           </div>
         )
