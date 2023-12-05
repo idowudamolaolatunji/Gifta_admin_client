@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
+import { AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Area } from "recharts";
 
 function ChartComponent({ deposits, withdrawals, subscriptions, giftings }) {
 	const data = [
@@ -31,7 +31,7 @@ function ChartComponent({ deposits, withdrawals, subscriptions, giftings }) {
 	];
 
 	return (
-		<LineChart
+		<AreaChart
 			width={850}
 			height={320}
 			data={data}
@@ -42,9 +42,9 @@ function ChartComponent({ deposits, withdrawals, subscriptions, giftings }) {
 			<YAxis />
 			<Tooltip />
 			<Legend />
-			<Line type="monotone" dataKey="Transactions" stroke="#8884d8" />
-			{/* <Line type="monotone" dataKey="pending" stroke="#82ca9d" /> */}
-		</LineChart>
+			<Area type="monotone" dataKey="Transactions" stroke="#BB0505" fill= "#FED7D7" />
+			{/* <Area type="monotone" dataKey="pending" stroke="#82ca9d"  stroke="#8884d8"/> */}
+		</AreaChart>
 	);
 }
 

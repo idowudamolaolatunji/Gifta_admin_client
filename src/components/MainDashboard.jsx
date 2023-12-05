@@ -8,12 +8,13 @@ import { HiOutlineUsers, HiOutlineShoppingBag } from "react-icons/hi2";
 import { LuPackageOpen } from "react-icons/lu";
 
 import TransactionTable from "./TransactionTable";
+import Spinner from "./Spinner";
 
 
 
 function MainDashboard() {
-    const [selectedTab, setSeletedTab] = useState('allTime')
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedTab, setSeletedTab] = useState('allTime')
     const [users, setUsers] = useState([]);
     const [reminders, setReminders] = useState([]);
     const [giftings, setGiftings] = useState([]);
@@ -27,15 +28,18 @@ function MainDashboard() {
             try {
                 setIsLoading(true);
 
+                // const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes, ordersRes] = await Promise.all([
                 const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes] = await Promise.all([
                     await fetch('https://api-gifta.cyclic.app/api/users/'),
                     await fetch('https://api-gifta.cyclic.app/api/reminders/every-reminder'),
                     await fetch('https://api-gifta.cyclic.app/api/giftings/'),
                     await fetch('https://api-gifta.cyclic.app/api/wishlists/'),
                     await fetch('https://api-gifta.cyclic.app/api/gift-products/products'),
+                    // await fetch('https://api-gifta.cyclic.app/api/gift-products/products'),
                 ]);
 
-                if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok) {
+                // if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok || !ordersRes.ok) {
+                if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok) {
                     throw new Error('Something went wrong!');
                 }
 
@@ -44,12 +48,14 @@ function MainDashboard() {
                 const giftingsData = await giftingsRes.json();
                 const wishListsData = await wishListsRes.json();
                 const giftProductsData = await giftProductsRes.json();
+                // const ordersData = await ordersRes.json();
 
                 setUsers(usersData.data.users);
                 setReminders(remindersData.data.reminders);
                 setGiftings(giftingsData.data.giftings);
                 setWishLists(wishListsData.data.wishLists);
                 setGiftProducts(giftProductsData.data.giftProducts);
+                // setOrders(ordersData.data.orders)
 
             } catch(err) {
                 console.log(err);
@@ -75,65 +81,70 @@ function MainDashboard() {
 					</div>
 				</div>
 
-                <div className="dashboard_insights">
-                    <div className="insight">
-                        <span className="insight__icon"><LiaMoneyBillWaveSolid className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Profits</p>
-                            <p>₦0.00</p>
-                        </span>
+                {isLoading ? 
+                    <div className="dashboard_spinner">
+                        <Spinner />
                     </div>
-                    <div className="insight">
-                        <span className="insight__icon"><HiOutlineUsers className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Users</p>
-                            <p>{users.length}</p>
-                        </span>
+                     : (
+                    <div className="dashboard_insights">
+                        <div className="insight">
+                            <span className="insight__icon"><LiaMoneyBillWaveSolid className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Profits</p>
+                                <p>₦0.00</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><HiOutlineUsers className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Users</p>
+                                <p>{users.length}</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><AiOutlineShop className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Vendors</p>
+                                <p>{vendors.length}</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><IoAlarmOutline className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Reminders</p>
+                                <p>{reminders.length}</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><HiOutlineShoppingBag className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Products</p>
+                                <p>{giftProducts.length}</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><GoGift className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Giftings</p>
+                                <p>{giftings.length}</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><GoGift className="icon" /></span>
+                            <span className="insight__details">
+                                <p>WishLists</p>
+                                <p>{wishLists.length}</p>
+                            </span>
+                        </div>
+                        <div className="insight">
+                            <span className="insight__icon"><LuPackageOpen className="icon" /></span>
+                            <span className="insight__details">
+                                <p>Orders</p>
+                                <p>{orders.length}</p>
+                            </span>
+                        </div>
                     </div>
-                    <div className="insight">
-                        <span className="insight__icon"><AiOutlineShop className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Vendors</p>
-                            <p>{vendors.length}</p>
-                        </span>
-                    </div>
-                    <div className="insight">
-                        <span className="insight__icon"><IoAlarmOutline className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Reminders</p>
-                            <p>{reminders.length}</p>
-                        </span>
-                    </div>
-                    <div className="insight">
-                        <span className="insight__icon"><HiOutlineShoppingBag className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Products</p>
-                            <p>{giftProducts.length}</p>
-                        </span>
-                    </div>
-                    <div className="insight">
-                        <span className="insight__icon"><GoGift className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Giftings</p>
-                            <p>{giftings.length}</p>
-                        </span>
-                    </div>
-                    <div className="insight">
-                        <span className="insight__icon"><GoGift className="icon" /></span>
-                        <span className="insight__details">
-                            <p>WishLists</p>
-                            <p>{wishLists.length}</p>
-                        </span>
-                    </div>
-                    <div className="insight">
-                        <span className="insight__icon"><LuPackageOpen className="icon" /></span>
-                        <span className="insight__details">
-                            <p>Orders</p>
-                            <p>{orders.length}</p>
-                        </span>
-                    </div>
-                </div>
-
+                )}
 
                 <TransactionTable />
 

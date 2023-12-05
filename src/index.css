@@ -61,3 +61,56 @@ body {
 img {
   object-fit: cover;
 }
+
+
+.overlay .spinner-Container, .onboard .spinner-Container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.dashboard_spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 21.5rem;
+}
+
+
+/* ALERTS */
+.alert {
+  padding: 2.4rem;
+  border-radius: .4rem;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000000;
+  transition: all .35s ease-in;
+}
+.alert.alert--success {
+  background-color: #C6F6D5;
+  box-shadow: .2rem .2rem 2rem rgba(0, 128, 1, .25);
+}
+.alert.alert--error {
+  background-color: #FED7D7;
+  box-shadow: .2rem .2rem 2rem rgba(186, 5, 5, .25);
+}
+.alert--icon {
+  font-size: 2.4rem;
+}
+.alert--success .alert--icon {
+  color: #38A169;
+}
+.alert--error .alert--icon {
+  color: #BB0505;
+}
+.alert--text {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}

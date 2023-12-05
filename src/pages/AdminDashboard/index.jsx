@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { LuLayoutDashboard } from "react-icons/lu";
 import { HiOutlineUsers } from "react-icons/hi2";
@@ -26,15 +26,38 @@ import WishlishTable from "../../components/WishlishTable";
 import GiftingTable from "../../components/GiftingTable";
 import OnboardingVendors from "../../components/OnboardingVendors";
 import Settings from "../../components/Settings";
+import { useAuthContext } from "../../context/AuthContext";
+import Spinner from "../../components/Spinner";
+
 
 function index() {
 	const [activeTab, setActiveTab] = useState("dashboard");
+	const [IsLoading, setIsLoading] = useState(false);
+
+	const { logout } = useAuthContext();
 
 	const changeTab = (tabName) => {
 	  setActiveTab(tabName);
 	};
 
+	function handleLogout () {
+		setIsLoading(true);
+		logout();
+
+		// logging out
+		setTimeout(() => {
+			setIsLoading(false)
+		}, 2500)
+		window.location.reload(true)
+	}
+
 	return (
+		<>
+		{ IsLoading && (
+			<div className="overlay">
+				<Spinner />
+			</div>
+		)}
 		<main className="admin__dashboard">
 			<menu className="admin__sidebar">
 				<span id="logo-container">
@@ -63,14 +86,14 @@ function index() {
 					</li>
 
 					<li className={`sidebar--item ${activeTab === 'gifting' ? 'sidebar--active' : ''}`} onClick={() => changeTab("gifting")} >
-						<TfiGift className="sidebar--icon" /> Giftings
+						<TfiGift className="sidebar--icon" /> Giftings & Orders
 					</li>
 					<li className={`sidebar--item ${activeTab === 'onboarding' ? 'sidebar--active' : ''}`} onClick={() => changeTab("onboarding")} >
 						<TbUsersPlus className="sidebar--icon" /> Onboard Vendors
 					</li>
-					{/* <li className={`sidebar--item ${activeTab === 'settings' ? 'sidebar--active' : ''}`} onClick={() => changeTab("settings")} >
+					<li className={`sidebar--item ${activeTab === 'settings' ? 'sidebar--active' : ''}`} onClick={() => changeTab("settings")} >
 						<RxGear className="sidebar--icon" /> Settings
-					</li> */}
+					</li>
 				</ul>
 			</menu>
 
@@ -80,7 +103,7 @@ function index() {
 					<span>
 						<AiOutlineBell className="nav--icon bell" />
 						<RiAdminLine className="nav--icon admin" />
-						<HiOutlineLogout className="nav--icon logout" />
+						<HiOutlineLogout className="nav--icon logout" onClick={handleLogout} />
 					</span>
 				</nav>
 
@@ -92,10 +115,11 @@ function index() {
 					{activeTab === "wishlist" && <WishlishTable />}
 					{activeTab === "gifting" && <GiftingTable />}
 					{activeTab === "onboarding" && <OnboardingVendors />}
-					{/* {activeTab === "settings" && <Settings />} */}
+					{activeTab === "settings" && <Settings />}
 				</section>
 			</div>
 		</main>
+		</>
 	);
 }
 
