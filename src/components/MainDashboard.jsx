@@ -30,12 +30,12 @@ function MainDashboard() {
 
                 // const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes, ordersRes] = await Promise.all([
                 const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes] = await Promise.all([
-                    await fetch('https://api-gifta.cyclic.app/api/users/'),
-                    await fetch('https://api-gifta.cyclic.app/api/reminders/every-reminder'),
-                    await fetch('https://api-gifta.cyclic.app/api/giftings/'),
-                    await fetch('https://api-gifta.cyclic.app/api/wishlists/'),
-                    await fetch('https://api-gifta.cyclic.app/api/gift-products/products'),
-                    // await fetch('https://api-gifta.cyclic.app/api/gift-products/products'),
+                    await fetch('https://blue-breakable-elephant.cyclic.app/api/users/'),
+                    await fetch('https://blue-breakable-elephant.cyclic.app/api/reminders/every-reminder'),
+                    await fetch('https://blue-breakable-elephant.cyclic.app/api/giftings/'),
+                    await fetch('https://blue-breakable-elephant.cyclic.app/api/wishlists/'),
+                    await fetch('https://blue-breakable-elephant.cyclic.app/api/gift-products/products'),
+                    // await fetch('https://blue-breakable-elephant.cyclic.app/api/gift-products/products'),
                 ]);
 
                 // if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok || !ordersRes.ok) {

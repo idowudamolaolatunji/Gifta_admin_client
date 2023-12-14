@@ -34,7 +34,7 @@ function TransactionTable() {
 		async function fetchTransactions() {
 			try {
 				setIsLoading(true);
-				const res = await fetch('https://api-gifta.cyclic.app/api/transactions/', {
+				const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/transactions/', {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",

@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
 	const logout = async () => {
 		try {
-			const res = await fetch("https://api-gifta.cyclic.app/api/users/logout", {
+			const res = await fetch("https://blue-breakable-elephant.cyclic.app/api/users/logout", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

@@ -36,7 +36,7 @@ function ProductTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://api-gifta.cyclic.app/api/gift-products/products', {
+				const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/gift-products/products', {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"

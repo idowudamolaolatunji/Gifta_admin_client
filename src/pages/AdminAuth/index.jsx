@@ -45,7 +45,7 @@ function index() {
 				throw new Error("Fields Empty");
 			}
 
-			const res = await fetch("https://api-gifta.cyclic.app/api/users/admin-login", {
+			const res = await fetch("https://blue-breakable-elephant.cyclic.app/api/users/admin-login", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
