@@ -37,7 +37,7 @@ function UsersTable() {
     async function fetchUsers() {
       try {
         setIsLoading(true)
-        const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/users', {
+        const res = await fetch('https://test.tajify.com/api/users', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

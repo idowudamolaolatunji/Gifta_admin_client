@@ -31,7 +31,7 @@ function GiftingTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/giftings/', {
+				const res = await fetch('https://test.tajify.com/api/giftings/', {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
@@ -130,7 +130,7 @@ function OrderTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/Orders/', {
+				const res = await fetch('https://test.tajify.com/api/Orders/', {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"

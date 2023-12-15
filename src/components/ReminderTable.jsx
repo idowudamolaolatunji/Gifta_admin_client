@@ -34,7 +34,7 @@ function ReminderTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/reminders/every-reminder', {
+				const res = await fetch('https://test.tajify.com/api/reminders/every-reminder', {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"

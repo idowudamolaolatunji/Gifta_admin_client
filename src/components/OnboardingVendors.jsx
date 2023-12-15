@@ -54,7 +54,7 @@ function OnboardingVendors() {
 			setIsLoading(true);
 			handleReset();
 
-			const res = await fetch("https://blue-breakable-elephant.cyclic.app/api/users/signup-vendor", {
+			const res = await fetch("https://test.tajify.com/api/users/signup-vendor", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

@@ -32,7 +32,7 @@ function WishlishTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://blue-breakable-elephant.cyclic.app/api/wishlists/', {
+				const res = await fetch('https://test.tajify.com/api/wishlists/', {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
