@@ -69,8 +69,8 @@ function TransactionTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-image-user">
-						<img src={row.user.image} alt={row.user.username} />
-						<p>{row.user.username}</p>
+						<img src={row.user.image} alt={row.user.fullName} />
+						<p>{row.user.fullName}</p>
 					</div>
 				);
 			},

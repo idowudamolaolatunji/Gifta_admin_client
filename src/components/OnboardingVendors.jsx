@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { AiFillCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
-
 import Spinner from "./Spinner";
 import Alert from "./Alert";
 
@@ -15,7 +14,6 @@ function OnboardingVendors() {
 	const [isError, setIsError] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [message, setMessage] = useState("");
-
 	const [isLoading, setIsLoading] = useState(false);
 	// /signup-vendor
 
