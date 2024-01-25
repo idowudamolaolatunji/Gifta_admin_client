@@ -65,8 +65,8 @@ function WishlishTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-image-user">
-						{/* <img src={row.user.image} alt={row.user.username} />
-						<p>{row.user.username}</p> */}
+						<img src={row?.user.image ? `https://test.tajify.com/asset/users/${row.user.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.user.username} />
+						<p>{row.user.username}</p>
 					</div>
 				);
 			},

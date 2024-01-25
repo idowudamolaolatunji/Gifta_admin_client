@@ -32,7 +32,7 @@ import Spinner from "../../components/Spinner";
 
 function index() {
 	const [activeTab, setActiveTab] = useState("dashboard");
-	const [IsLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const { logout } = useAuthContext();
 
@@ -53,7 +53,7 @@ function index() {
 
 	return (
 		<>
-		{ IsLoading && (
+		{ isLoading && (
 			<div className="overlay">
 				<Spinner />
 			</div>

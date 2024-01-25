@@ -64,7 +64,7 @@ function GiftingTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={row.gift.image} alt={row.gift.name} />
+						<img src={`https://test.tajify.com/asset/others/${row.gift.image}`} alt={row.gift.name} />
 						<p>{row.gift.name}</p>
 					</div>
 				);
@@ -163,7 +163,7 @@ function OrderTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={row?.gift.image} alt={row?.gift.name} />
+						<img src={`https://test.tajify.com/asset/others/${row?.gift.image}`} alt={row?.gift.name} />
 						<p>{row?.gift.name}</p>
 					</div>
 				);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { dateConverter } from "../utils/helper";
+import { dateConverter, expectedDateFormatter } from "../utils/helper";
 import Spinner from "./Spinner";
 
 const customStyles = {
@@ -66,8 +66,7 @@ function ReminderTable() {
 			selector: (row) => {
                 return (
                     <div className='table-flex table-image-user'>
-                    {/* <img src={row.user.image} alt={row.user.username} /> */}
-                    {/* <p>{row.user.username}</p> */}
+                    <p>{row?.user.fullName || row?.user.username}</p>
                   </div>
                 )
             },
@@ -78,15 +77,11 @@ function ReminderTable() {
 		},
 		{
 			name: "Category",
-			selector: (row) => row.category,
-		},
-		{
-			name: "Added Gifts",
-			selector: (row) => row.giftID.length,
+			selector: (row) => row?.category,
 		},
 		{
 			name: "Reminder Date",
-			selector: (row) => dateConverter(row.reminderDate),
+			selector: (row) => expectedDateFormatter(row.reminderDate),
 			// fix this reminder date later
 		},
 		{

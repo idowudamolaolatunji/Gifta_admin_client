@@ -73,7 +73,7 @@ function UsersTable() {
       selector: row => {
         return (
           <div className='table-flex table-image-user'>
-            <img src={row.image} alt={row.fullName?.split(' ')[0] || row.username} />
+            <img src={row?.image ? `https://test.tajify.com/asset/users/${row?.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.fullName || row.username} />
             <p>{row.username}</p>
           </div>
         )

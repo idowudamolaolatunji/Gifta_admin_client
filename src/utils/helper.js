@@ -32,8 +32,40 @@ export function dateConverter(givenDate) {
     } else if (inputDate.isSame(currentDate.clone().subtract(1, 'day'), 'day')) {
         return `Yesterday, ${inputDate.format('h:mm A')}`;
     } else if (inputDate.isSame(currentDate.clone().subtract(2, 'day'), 'day')) {
-        return `Two days ago, ${inputDate.format('h:mm A')}`;
+        return `Two days ago`;
     } else {
-      return inputDate.format('MMM Do YYYY, h:mm A');
+      return inputDate.format('MMM Do YYYY');
     }
+}
+
+
+export function expectedDateFormatter(givenDate) {
+	const currentDate = moment().startOf("day");
+	const inputDate = moment(givenDate);
+
+	if (inputDate.isSame(currentDate, "day")) {
+		return "Today";
+	} else if (inputDate.isBefore(currentDate)) {
+		return "Date Passed";
+	} else {
+		const diffInDays = inputDate.diff(currentDate, "days", true);
+
+		if (diffInDays >= 365) {
+			const years = Math.floor(diffInDays / 365);
+			return `In ${years} year${years > 1 ? "s" : ""}`;
+		} else if (diffInDays >= 30) {
+			const months = Math.floor(diffInDays / 30);
+			return `In ${months} month${months > 1 ? "s" : ""}`;
+		} else if (diffInDays >= 1) {
+			return `In ${Math.floor(diffInDays)} day${diffInDays > 1 ? "s" : ""}`;
+		} else {
+			const diffInHours = inputDate.diff(currentDate, "hours", true);
+			if (diffInHours >= 1) {
+				return `In ${Math.floor(diffInHours)} hour${diffInHours > 1 ? "s" : ""}`;
+			} else {
+				const diffInMinutes = inputDate.diff(currentDate, "minutes", true);
+				return `In ${Math.floor(diffInMinutes)} minute${diffInMinutes > 1 ? "s" : ""}`;
+			}
+		}
+	}
 }

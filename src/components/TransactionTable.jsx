@@ -68,14 +68,13 @@ function TransactionTable() {
 			name: "User Details",
 			selector: (row) => {
 				return (
-					<div className="table-flex table-image-user">
-						<img src={row.user.image} alt={row.user.fullName} />
-						<p>{row.user.fullName}</p>
+					<div className="table-flex table-image-user" style={{ wordWrap: 'break-word'}}>
+						<img src={row.user.image ? `https://test.tajify.com/asset/users/${row.user.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.user.fullName.split(' ')[0]} />
+						<p>{row.user.fullName.split(' ')[0]}</p>
 					</div>
 				);
 			},
 		},
-		
 		{
 			name: "Purpose",
 			selector: (row) => row.purpose,
