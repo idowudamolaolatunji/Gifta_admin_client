@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../AdminAuth/main.css";
+import "./main.css";
 import Spinner from "../../components/Spinner";
 
 import { AiFillCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
@@ -45,7 +45,7 @@ function index() {
 				throw new Error("Fields Empty");
 			}
 
-			const res = await fetch("https://test.tajify.com/api/users/admin-login", {
+			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/admin-login`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

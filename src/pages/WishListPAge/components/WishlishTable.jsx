@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { dateConverter } from "../utils/helper";
-import Spinner from "./Spinner";
+import { currencyConverter, dateConverter } from "../../../utils/helper";
+import Spinner from "../../../components/Spinner";
 
 const customStyles = {
 	head: {
@@ -32,7 +32,7 @@ function WishlishTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://test.tajify.com/api/wishlists/', {
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/wishlists/`, {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
@@ -65,31 +65,32 @@ function WishlishTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-image-user">
-						<img src={row?.user.image ? `https://test.tajify.com/asset/users/${row.user.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.user.username} />
-						<p>{row.user.username}</p>
+						<img src={row?.user?.image ? `${import.meta.env.VITE_SERVER_ASSET_URL}/users/${row?.user?.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row?.user?.username} />
+						<p>{row?.user?.fullName || row?.user?.username}</p>
 					</div>
 				);
 			},
+			width: '200px'
 		},
 		{
 			name: "Wishlist title",
-			selector: (row) => row.name,
+			selector: (row) => row?.name,
 		},
 		{
 			name: "Category",
-			selector: (row) => row.category,
+			selector: (row) => row?.category,
 		},
 		{
 			name: "Wishes",
-			selector: (row) => row.wishes.length,
+			selector: (row) => row?.wishes?.length,
 		},
 		{
 			name: "Amount Made",
-			selector: (row) => row.amountMade || '₦0.00'
+			selector: (row) => `₦${currencyConverter(row?.amountMade)}` || '₦0.00'
 		},
 		{
 			name: "Wished At",
-			selector: (row) => dateConverter(row.createdAt),
+			selector: (row) => dateConverter(row?.createdAt),
 		},
 	];
 

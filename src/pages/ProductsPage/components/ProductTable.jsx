@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { dateConverter } from "../utils/helper";
-import Spinner from "./Spinner";
+import { dateConverter, numberFormatter, truncate } from "../../../utils/helper";
+import Spinner from "../../../components/Spinner";
 
 const customStyles = {
 	head: {
@@ -36,7 +36,7 @@ function ProductTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://test.tajify.com/api/gift-products/products', {
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/gift-products/products`, {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
@@ -68,23 +68,33 @@ function ProductTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={row.image} alt={row.name} />
-						<p>{row.name}</p>
+						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/products/${row?.images[0]}`} alt={row.name} />
+						<p>{truncate(row?.name, 22)}</p>
 					</div>
 				);
 			},
+			width: '250px'
+			
 		},
 		{
 			name: "Price",
-			selector: (row) => row.price,
+			selector: (row) => `₦${numberFormatter(row.price)}`,
 		},
 		{
 			name: "Category",
 			selector: (row) => row.category,
 		},
 		{
-			name: "Stock Avail.",
-			selector: (row) => row.stockAvail,
+			name: "Product Vendor",
+			selector: row => {
+                return (
+                    <div className='table-flex table-image-user'>
+                        <img src={row?.vendor?.image ? `${import.meta.env.VITE_SERVER_ASSET_URL}/users/${row?.vendor?.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.fullName || row.username} />
+                        <p>{truncate(row?.vendor?.fullName, 20)}</p>
+                    </div>
+                )
+            },
+			width: '250px'
 		},
 		{
 			name: "Uploaded At",

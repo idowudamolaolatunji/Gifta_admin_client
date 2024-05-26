@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 import { AiFillCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
-import Spinner from "./Spinner";
-import Alert from "./Alert";
+import Spinner from "../../../components/Spinner";
+import Alert from "../../../components/Alert";
 
-function OnboardingVendors() {
+function OnboardForms() {
 	const [fullname, setFullname] = useState("");
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
@@ -55,7 +55,7 @@ function OnboardingVendors() {
 			setIsLoading(true);
 			handleReset();
 
-			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/signup-vendor", {
+			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/signup-vendor`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -245,4 +245,4 @@ function OnboardingVendors() {
 	);
 }
 
-export default OnboardingVendors;
+export default OnboardForms;

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { dateConverter } from "../utils/helper";
-import Spinner from "./Spinner";
+import { dateConverter, numberFormatter } from "../../../utils/helper";
+import Spinner from "../../../components/Spinner";
 
 const customStyles = {
 	head: {
@@ -31,7 +31,7 @@ function GiftingTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://test.tajify.com/api/giftings/', {
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/giftings/`, {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
@@ -64,8 +64,8 @@ function GiftingTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={`https://test.tajify.com/asset/others/${row.gift.image}`} alt={row.gift.name} />
-						<p>{row.gift.name}</p>
+						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/products/${row?.gift?.images[0]}`} alt={row?.gift?.name} />
+						<p>{row?.gift?.name}</p>
 					</div>
 				);
 			},
@@ -80,7 +80,7 @@ function GiftingTable() {
 		},
 		{
 			name: "Price",
-			selector: (row) => row.amount,
+			selector: (row) => `${numberFormatter(row.amount)}`,
 		},
 		{
 			name: "State",
@@ -130,7 +130,7 @@ function OrderTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://test.tajify.com/api/Orders/', {
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/orders/all-order`, {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
@@ -163,7 +163,7 @@ function OrderTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={`https://test.tajify.com/asset/others/${row?.gift.image}`} alt={row?.gift.name} />
+						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/others/${row?.gift.image}`} alt={row?.gift.name} />
 						<p>{row?.gift.name}</p>
 					</div>
 				);

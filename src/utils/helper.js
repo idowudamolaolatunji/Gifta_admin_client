@@ -9,7 +9,6 @@ export function currencyConverter (amount) {
 export function numberFormatter (amount) {
     return Number(amount).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
- 
 
 // DATE CONVERTER HELPER FUNCTION
 export function dateConverter(givenDate) {
@@ -68,4 +67,23 @@ export function expectedDateFormatter(givenDate) {
 			}
 		}
 	}
+}
+
+
+export function truncate(input, num=30) {
+    if (input?.length > num) {
+        return input.substring(0, num) + "...";
+    } else {
+        return input;
+    }
+}
+
+export function mdyConvertDate(dateString) {
+	if(!dateString) return;
+	const date = new Date(dateString);
+	const year = date.getFullYear();
+	let month = (date.getMonth() + 1).toString().padStart(2, "0");
+	let day = date.getDate().toString().padStart(2, "0");
+
+	return `${month}-${day}-${year}`;
 }

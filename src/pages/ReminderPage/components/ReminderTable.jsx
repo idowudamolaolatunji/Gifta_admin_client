@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { dateConverter, expectedDateFormatter } from "../utils/helper";
-import Spinner from "./Spinner";
+import { dateConverter, expectedDateFormatter } from "../../../utils/helper";
+import Spinner from "../../../components/Spinner";
 
 const customStyles = {
 	head: {
@@ -34,7 +34,7 @@ function ReminderTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await fetch('https://test.tajify.com/api/reminders/every-reminder', {
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/reminders/every-reminder`, {
 					method: 'GET',
 					headers: {
 						"Content-Type": "application/json"
@@ -66,27 +66,29 @@ function ReminderTable() {
 			selector: (row) => {
                 return (
                     <div className='table-flex table-image-user'>
-                    <p>{row?.user.fullName || row?.user.username}</p>
+						<img src={row?.user?.image ? `${import.meta.env.VITE_SERVER_ASSET_URL}/users/${row?.user?.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.fullName || row.username} />
+                    	<p>{row?.user?.fullName || row?.user?.username}</p>
                   </div>
                 )
             },
+			width: '220px'
 		},
 		{
 			name: "Reminder Title",
-			selector: (row) => row.title,
+			selector: (row) => row?.title,
 		},
 		{
 			name: "Category",
-			selector: (row) => row?.category,
+			selector: (row) => row?.purpose,
 		},
 		{
 			name: "Reminder Date",
-			selector: (row) => expectedDateFormatter(row.reminderDate),
+			selector: (row) => expectedDateFormatter(row?.reminderDate),
 			// fix this reminder date later
 		},
 		{
 			name: "Created At",
-			selector: (row) => dateConverter(row.createdAt),
+			selector: (row) => dateConverter(row?.createdAt),
 		},
 	];
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import DataTable from "react-data-table-component";
-import { dateConverter } from "../utils/helper";
-import Spinner from './Spinner';
+import { dateConverter, numberFormatter } from "../../../utils/helper";
+import Spinner from '../../../components/Spinner';
 import ChartComponent from "./ChartComponent";
 
 const customStyles = {
@@ -34,7 +34,7 @@ function TransactionTable() {
 		async function fetchTransactions() {
 			try {
 				setIsLoading(true);
-				const res = await fetch('https://test.tajify.com/api/transactions/', {
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/transactions/`, {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
@@ -69,31 +69,35 @@ function TransactionTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-image-user" style={{ wordWrap: 'break-word'}}>
-						<img src={row.user.image ? `https://test.tajify.com/asset/users/${row.user.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.user.fullName.split(' ')[0]} />
-						<p>{row.user.fullName.split(' ')[0]}</p>
+						<img src={row?.user?.image ? `${import.meta.env.VITE_SERVER_ASSET_URL}/users/${row?.user?.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row?.user?.fullName.split(' ')[0]} />
+						<p>{row?.user?.fullName?.split(' ')[0]}</p>
 					</div>
 				);
 			},
 		},
 		{
 			name: "Purpose",
-			selector: (row) => row.purpose,
+			selector: (row) => row?.purpose,
 		},
 		{
 			name: "Amount",
-			selector: (row) => row.amount,
+			selector: (row) => `₦${numberFormatter(row?.amount)}`,
 		},
 		{
 			name: "Status",
-			selector: (row) => row.status,
+			selector: (row) => (
+				<span className={`status status--${row?.status === 'pending' ? "pending" : row?.status === 'success' ? 'success' : 'rejected' }`}>
+                    <p>{row?.status === 'pending' ? "Pending" : row?.status === 'success' ? 'Success' : 'Unsuccessful' }</p>
+                </span>
+			),
 		},
 		{
 			name: "Refrence",
-			selector: (row) => row.reference,
+			selector: (row) => row?.reference,
 		},
 		{
 			name: "Paid At",
-			selector: (row) => dateConverter(row.createdAt),
+			selector: (row) => dateConverter(row?.createdAt),
 		},
 	];
 

@@ -8,7 +8,7 @@ import { HiOutlineUsers, HiOutlineShoppingBag } from "react-icons/hi2";
 import { LuPackageOpen } from "react-icons/lu";
 
 import TransactionTable from "./TransactionTable";
-import Spinner from "./Spinner";
+import Spinner from "../../../components/Spinner";
 
 
 
@@ -30,12 +30,12 @@ function MainDashboard() {
 
                 // const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes, ordersRes] = await Promise.all([
                 const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes] = await Promise.all([
-                    await fetch('https://test.tajify.com/api/users/'),
-                    await fetch('https://test.tajify.com/api/reminders/every-reminder'),
-                    await fetch('https://test.tajify.com/api/giftings/'),
-                    await fetch('https://test.tajify.com/api/wishlists/'),
-                    await fetch('https://test.tajify.com/api/gift-products/products'),
-                    // await fetch('https://test.tajify.com/api/gift-products/products'),
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/users/`),
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/reminders/every-reminder`),
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/giftings/`),
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/wishlists/`),
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/gift-products/products`),
+                    // await fetch(`${import.meta.env.VITE_SERVER_URL}/gift-products/products`),
                 ]);
 
                 // if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok || !ordersRes.ok) {

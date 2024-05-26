@@ -1,7 +1,13 @@
 import React from "react";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminAuth from "./pages/AdminAuth";
-import ProtectedRoute from './Auth/ProtectedRoute';
+import MainDashboard from "./pages/MainPage";
+import UsersPage from "./pages/UsersPage";
+import ReminderPage from "./pages/ReminderPage";
+import ProductsPage from "./pages/ProductsPage";
+import WishlistPage from "./pages/WishListPAge";
+import KycPage from "./pages/KycPage";
+import OnboardingPage from "./pages/OnboardingPage";
+import AuthPage from "./pages/AuthPage";
+import ProtectedRoute from './utils/ProtectedRoute';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -9,11 +15,17 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route element={<ProtectedRoute />}>
-					<Route path="/" element={<AdminDashboard />}></Route>
-					<Route path="/dashboard" element={<AdminDashboard />}></Route>
+					<Route path="/dashboard" element={<MainDashboard />}></Route>
+					<Route path="/users" element={<UsersPage />}></Route>
+					<Route path="/reminders" element={<ReminderPage />}></Route>
+					<Route path="/products" element={<ProductsPage />}></Route>
+					<Route path="/wishlists" element={<WishlistPage />}></Route>
+					{/* <Route path="/giftings-and-orders" element={<GiftingsAndOrdersPage />}></Route> */}
+					<Route path="/onboarding" element={<OnboardingPage />}></Route>
+					<Route path="/kycs" element={<KycPage />}></Route>
 				</Route>
 
-                <Route path="/login" element={<AdminAuth />}></Route>
+                <Route path="/login" element={<AuthPage />}></Route>
 			</Routes>
 		</BrowserRouter>
 	);
