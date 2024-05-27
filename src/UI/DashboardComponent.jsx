@@ -94,6 +94,9 @@ function DashboardComponent({ children }) {
 					<li className={`sidebar--item ${pathname ==='/kycs' ? 'sidebar--active' : ''}`} onClick={() => navigate("/kycs")} >
 						<HiOutlineIdentification className="sidebar--icon" /> KYC
 					</li>
+					<li className={`sidebar--item ${pathname ==='/categories' ? 'sidebar--active' : ''}`} onClick={() => navigate("/categories")} >
+						<HiOutlineIdentification className="sidebar--icon" /> Add Categories
+					</li>
 					{/* <li className={`sidebar--item ${activeNavTab.includes('settings') ? 'sidebar--active' : ''}`} onClick={() => navigate("/settings")} >
 						<RxGear className="sidebar--icon" /> Settings
 					</li> */}

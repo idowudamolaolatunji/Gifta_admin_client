@@ -1,6 +1,8 @@
 .admin__dashboard {
     display: grid;
     grid-template-columns: 26.4rem 10fr;
+    overflow: hidden;
+    height: 100vh;
 }
 #logo-container img {
     height: 6rem;
@@ -18,13 +20,17 @@
     border-right: 1.2px solid #eee;
     overflow-y: auto;
 }
+.admin__sidebar::-webkit-scrollbar {
+	width: 0.6rem ;
+	display: none;
+}
 .sidebar--list {
     margin-top: 3rem;
     padding: 1.8rem 1.4rem;
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1rem;
 }
 .sidebar--item {
     color: #555;

@@ -222,7 +222,7 @@ function OrderTable() {
 
 
 
-function giftAndOrderComponent() {
+function GiftAndOrderComponent() {
 	return (
 		<>
 			<GiftingTable />
@@ -230,4 +230,4 @@ function giftAndOrderComponent() {
 		</>
 	)
 }
-export default giftAndOrderComponent;
+export default GiftAndOrderComponent;

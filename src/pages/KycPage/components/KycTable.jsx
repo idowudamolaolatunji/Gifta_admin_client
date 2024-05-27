@@ -286,9 +286,40 @@ function KycTable() {
 
                         {(modalTab === 'documents' && !isLoadingDoc) && (
                             <div>
+                                <div className="">
+                                    <>
+                                        <p></p>
+                                        <span>
+                                            <img src="" alt="" />
+                                        </span>
+                                    </>
+                                </div>
+                                <div className="">
+                                    <>
+                                        <p></p>
+                                        <span>
+                                            <img src="" alt="" />
+                                        </span>
+                                    </>
+                                </div>
 
+                                <div className="">
+                                    <>
+                                        <p></p>
+                                        <span>
+                                        </span>
+                                    </>
+                                </div>
+                                <div className="">
+                                    <>
+                                        <p></p>
+                                        <span>
+                                        </span>
+                                    </>
+                                </div>
 
                             </div>
+
                         )}
                     </div>
 
