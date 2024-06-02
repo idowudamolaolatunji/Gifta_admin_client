@@ -72,23 +72,23 @@ function GiftingTable() {
 		},
 		{
 			name: "Gifter Email",
-			selector: (row) => row.gifter.email,
+			selector: (row) => row?.gifter?.email,
 		},
 		{
 			name: "Celebrant Name",
-			selector: (row) => row.name,
+			selector: (row) => row?.celebrant,
 		},
 		{
 			name: "Price",
-			selector: (row) => `${numberFormatter(row.amount)}`,
+			selector: (row) => `${numberFormatter(row?.amount)}`,
 		},
 		{
 			name: "State",
-			selector: (row) => row.state,
+			selector: (row) => row?.state,
 		},
 		{
 			name: "Delivary Date",
-			selector: (row) => dateConverter(row.date),
+			selector: (row) => dateConverter(row?.date),
 		},
 	];
 
@@ -145,8 +145,9 @@ function OrderTable() {
 				if(data.status !== "success") {
 					throw new Error(data.message);
 				}
+				console.log(data, 'Line 148')
 
-				setOrders(data.data.Orders);
+				setOrders(data.data.orders);
 			} catch(err) {
 				console.log(err);
 			} finally {
@@ -163,35 +164,35 @@ function OrderTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/others/${row?.gift.image}`} alt={row?.gift.name} />
-						<p>{row?.gift.name}</p>
+						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/others/${row?.gift?.image}`} alt={row?.gift?.name} />
+						<p>{row?.gift?.name}</p>
 					</div>
 				);
 			},
 		},
 		{
 			name: "Gifter Email",
-			selector: (row) => row.gifter.fullName,
+			selector: (row) => row?.gifter?.email,
 		},
 		{
 			name: "Celebrant Name",
-			selector: (row) => row.celebrant,
+			selector: (row) => row?.celebrant,
 		},
 		{
 			name: "Price",
-			selector: (row) => row.amount,
+			selector: (row) => row?.amount,
 		},
 		{
 			name: "State",
-			selector: (row) => row.state,
+			selector: (row) => row?.state,
 		},
 		{
 			name: "Order Date",
-			selector: (row) => dateConverter(row.createdAt),
+			selector: (row) => dateConverter(row?.createdAt),
 		},
 		{
 			name: "Delivery Stat",
-			selector: (row) => row.isDelivered,
+			selector: (row) => row?.isDelivered,
 		},
 	];
 

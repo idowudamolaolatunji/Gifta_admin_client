@@ -87,3 +87,8 @@ export function mdyConvertDate(dateString) {
 
 	return `${month}-${day}-${year}`;
 }
+
+
+export function capitalizeFirstLetter(string) {
+    return string?.slice(0, 1)?.toUpperCase() + string?.slice(1);
+}

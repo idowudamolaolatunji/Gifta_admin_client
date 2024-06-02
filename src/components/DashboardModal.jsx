@@ -1,7 +1,7 @@
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
-function DashboardModal({ setShowDashboardModal, SetItemId, title, customStyle, children }) {
+function DashboardModal({ setShowDashboardModal, SetItemId, title, customStyle, children, overLayZIndex }) {
 
 	function handleModalClose() {
 		setShowDashboardModal(false);
@@ -13,7 +13,7 @@ function DashboardModal({ setShowDashboardModal, SetItemId, title, customStyle, 
 
 	return (
 		<>
-			<div className="overlay" onClick={handleModalClose} />
+			<div className="overlay" onClick={handleModalClose} style={ overLayZIndex ? { zIndex: '30000' } : {} } />
 			<div className="modal" style={customStyle}>
 				<span className="modal--head">
 					<p className="modal--heading">{title}</p>

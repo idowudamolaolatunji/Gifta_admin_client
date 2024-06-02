@@ -2,37 +2,57 @@ import React from "react";
 
 import { AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Area } from "recharts";
 
-function ChartComponent({ deposits, withdrawals, subscriptions, giftings }) {
+function ChartComponent({ transactions }) {
+	console.log(transactions)
+	const { deposits, withdrawals, subscriptions, giftings, wishes, orders, redeemed } = transactions
 	const data = [
-		{
-			name: "Withdrawal",
-			// pending: 300,
-			// amt: 2210,
-			Transactions: withdrawals,
-		},
 		{
 			name: "Deposits",
 			// pending: 400,
 			// amt: 2400,
-			Transactions: deposits,
-		},
-		{
-			name: "Subscription",
-			// pending: 200,
-			// amt: 2290,
-			Transactions: subscriptions,
+			Transactions: deposits?.length,
 		},
 		{
 			name: "Gifting",
 			// pending: 278,
 			// amt: 2000,
-			Transactions: giftings,
+			Transactions: giftings?.length,
+		},
+		{
+			name: "Order",
+			// pending: 278,
+			// amt: 2000,
+			Transactions: orders?.length,
+		},
+		{
+			name: "Redeemed",
+			// pending: 278,
+			// amt: 2000,
+			Transactions: redeemed?.length,
+		},
+		{
+			name: "Subscription",
+			// pending: 200,
+			// amt: 2290,
+			Transactions: subscriptions?.length,
+		},
+		{
+			name: "Withdrawal",
+			// pending: 300,
+			// amt: 2210,
+			Transactions: withdrawals?.length,
+		},
+		{
+			name: "Wishes",
+			// pending: 200,
+			// amt: 2290,
+			Transactions: wishes?.length,
 		},
 	];
 
 	return (
 		<AreaChart
-			width={850}
+			width={870}
 			height={320}
 			data={data}
 			margin={{ top: 5, right: 30, left: 20, bottom: 5 }}

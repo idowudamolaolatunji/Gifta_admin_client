@@ -28,7 +28,13 @@ function TransactionTable() {
 	const deposits = transactions?.filter(transaction => transaction.purpose === 'deposit')
 	const withdrawals = transactions?.filter(transaction => transaction.purpose === 'withdrawal')
 	const subscriptions = transactions?.filter(transaction => transaction.purpose === 'subscription')
-	const giftings = transactions?.filter(transaction => transaction.purpose === 'gifting')
+	const giftings = transactions?.filter(transaction => transaction.purpose === 'gifting');
+	const wishes = transactions?.filter(transaction => transaction.purpose === 'wishes');
+	const orders = transactions?.filter(transaction => transaction.purpose === 'order');
+	const redeemed = transactions?.filter(transaction => transaction.purpose === 'redeemed');
+
+	const transactionObj = { deposits, withdrawals, subscriptions, giftings, wishes, orders, redeemed };
+	console.log(transactionObj)
 
 	useEffect(function() {
 		async function fetchTransactions() {
@@ -99,6 +105,9 @@ function TransactionTable() {
 			name: "Paid At",
 			selector: (row) => dateConverter(row?.createdAt),
 		},
+		{
+            selector: row => <button className='action--btn action--btn-view' onClick={() => handleKycModal(row)}>View</button>
+        }
 	];
 
 
@@ -107,7 +116,7 @@ function TransactionTable() {
 
 			<div className="chart-container">
 				<span className="sub_heading">Transaction Chart.</span>
-                    <ChartComponent deposits={deposits.length} withdrawals={withdrawals.length} subscriptions={subscriptions.length} giftings={giftings.length} />
+                    <ChartComponent transactions={transactionObj} />
 			</div>
 
 			<div className="dashboard_bottom">
@@ -121,11 +130,14 @@ function TransactionTable() {
 							<span className={`dashboard_tab ${filterTab === 'withdrawals' ? 'active' : ''}`} onClick={() => setFilterTab('withdrawals')}>Withdrawal</span>
 							<span className={`dashboard_tab ${filterTab === 'subscriptions' ? 'active' : ''}`} onClick={() => setFilterTab('subscriptions')}>Subscription</span>
 							<span className={`dashboard_tab ${filterTab === 'giftings' ? 'active' : ''}`} onClick={() => setFilterTab('giftings')}>Giftings</span>
+							<span className={`dashboard_tab ${filterTab === 'wishes' ? 'active' : ''}`} onClick={() => setFilterTab('wishes')}>Wishes</span>
+							<span className={`dashboard_tab ${filterTab === 'orders' ? 'active' : ''}`} onClick={() => setFilterTab('orders')}>Orders</span>
+							<span className={`dashboard_tab ${filterTab === 'redeemed' ? 'active' : ''}`} onClick={() => setFilterTab('redeemed')}>Redeemed</span>
 						</div>
 					</div>
 
 					<DataTable
-						data={filterTab === 'all' ? transactions : filterTab === 'deposits' ? deposits : filterTab === 'withdrawals' ? withdrawals : filterTab === 'subscriptions' ? subscriptions : filterTab === 'giftings' ? giftings : ''}
+						data={filterTab === 'all' ? transactions : filterTab === 'deposits' ? deposits : filterTab === 'withdrawals' ? withdrawals : filterTab === 'subscriptions' ? subscriptions : filterTab === 'giftings' ? giftings : filterTab === 'orders' ? orders : filterTab === 'redeemed' ? redeemed : filterTab === 'wishes' ? wishes : ''}
 						columns={columns}
 						pagination
 						customStyles={customStyles}
