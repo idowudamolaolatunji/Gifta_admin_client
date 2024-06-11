@@ -69,7 +69,7 @@ img {
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
-.spinner-Container {
+.spinner-overlay {
 	width: 100%;
 	height: 100VH;
 	position: absolute;
@@ -77,7 +77,7 @@ img {
 	left: 0;
 	right: 0;
 	background-color: #5757573f;
-	z-index: 1000;
+	z-index: 500000;
 
 	display: flex;
 	align-items: center;
@@ -129,6 +129,16 @@ img {
 	line-height: 1.2;
 }
 
+.modal__content input, .modal__content textarea {
+    font-size: 1.4rem;
+    font-family: inherit;
+}
+textarea {
+    resize: none;
+    min-height: 10rem;
+    color: #555;
+}
+
 .overlay {
 	width: 100%;
 	height: 110%;
@@ -148,9 +158,6 @@ img {
 	padding: 2.4rem 2.4rem;
 	background-color: #fff;
 	position: fixed;
-	min-height: 53rem;
-	max-width: 70rem;
-	width: 70rem;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%) scale(1);
@@ -158,6 +165,16 @@ img {
 	box-shadow: 0.2rem 0.2rem 2rem rgba(0, 0, 0, 0.5);
 	z-index: 1500;
 	animation: zoom-in 1s ease-in-out;
+}
+.modal.modal--lg {
+	min-height: 53rem;
+	max-width: 70rem;
+	width: 70rem;
+}
+.modal.modal--sm {
+	min-height: 30rem;
+	max-width: 55rem;
+	width: 55rem;
 }
 @keyframes zoom-in {
 	0% {
@@ -308,7 +325,7 @@ img {
 
 .mini-spinner-overlay {
 	width: 100%;
-	height: 40rem;
+	min-height: 20rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -359,7 +376,8 @@ img {
 .details-left span,
 .details-other span {
 	display: flex;
-	align-items: flex-start;
+	/* align-items: flex-start; */
+	align-items: center;
 	gap: 1.6rem;
 }
 .details-left span p:first-child,
@@ -383,8 +401,8 @@ img {
 	font-size: 1.2rem;
 	font-weight: 600;
 }
-.details-documents div a:link,
-.details-documents div a:visited,
+/* .details-documents div a:link,
+.details-documents div a:visited, */
 .details-documents .doc-item {
 	width: 100%;
 	height: 15rem;
@@ -459,4 +477,13 @@ img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+.no--message {
+	font-size: 1.4rem;
+	font-weight: 500;
+	line-height: 1.5;
+	color: #bb0505;
+	padding: 1.2rem;
+	border-radius: 0.6rem;
+	background-color: #eee;
 }

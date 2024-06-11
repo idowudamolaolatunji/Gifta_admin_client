@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from 'react-data-table-component';
 import { capitalizeFirstLetter, dateConverter, mdyConvertDate, truncate } from '../../../utils/helper'
-import Spinner from '../../../components/Spinner';
 import DashboardModal from '../../../components/DashboardModal';
 import Alert from '../../../components/Alert';
 import MiniSpinner from '../../../components/MiniSpinner';
+import Spinner from '../../../components/Spinner';
+import MainSpinner from '../../../components/MainSpinner';
 
 import { FaRegStickyNote } from "react-icons/fa";
 import { MdOutlineAdsClick } from "react-icons/md";
@@ -13,7 +14,6 @@ import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 
 import { useAuthContext } from '../../../context/AuthContext';
-import { AiFillCheckCircle, AiFillExclamationCircle } from 'react-icons/ai';
 
 const customStyles = {
     head: {
@@ -30,14 +30,12 @@ const customStyles = {
     },
 }
 
-
 const customStyleModal = {
     minHeight: "auto",
     maxWidth: "44rem",
     width: "44rem",
     zIndex: 300000
 };
-
 
 function KycTable() {
     const [kycs, setKycs] = useState([]);
@@ -49,18 +47,32 @@ function KycTable() {
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [seletedName, setSelectedName] = useState('');
-    const [userKyc, setUserKyc] = useState({});
+    const [userKyc, setUserKyc] = useState(null);
 
     const [modalTab, setModalTab] = useState('details');
     const [showActionModal, setShowActionModal] = useState(false)
     const [action, setAction] = useState('');
+    const [adminPassword, setAdminPassword] = useState('');
+    const [reasonMessage, setReasonMessage] = useState('');
 
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [message, setMessage] = useState("");
+    const [refecthHelp, setRefecthHelp] = useState(false);
 
-    const { user, token } = useAuthContext();
+    const { token } = useAuthContext();
 
+
+    const all = kycs;
+    const approvedKyc = kycs.filter((kyc) => kyc?.user?.isKycVerified && kyc.status === 'approved');
+    const pendingKyc = kycs.filter((kyc) => !kyc?.user?.isKycVerified && kyc.status === 'pending');
+    const rejectedKyc = kycs.filter((kyc) => !kyc?.user?.isKycVerified && kyc.status === 'rejected');
+
+
+    function Message() {
+        return (<p className="no--message" style={{ margin: '2rem auto' }}>No {filterTab !== 'all' ? filterTab : ''} document</p>) 
+    }
+    
 
     function handleKycModal(item) {
         setShowModal(true);
@@ -90,7 +102,12 @@ function KycTable() {
             setUserKyc(null)
             setModalTab('details');
         }
-    }, [showModal])
+        if(!showActionModal) {
+            setAdminPassword('');
+            setReasonMessage('');
+        }
+        // setRefecthHelp(false);
+    }, [showModal, showActionModal])
 
     useEffect(function () {
 
@@ -118,7 +135,7 @@ function KycTable() {
         }
 
         if (showModal) {
-            fetchUserKycDetail()
+            fetchUserKycDetail();
         }
 
     }, [showModal]);
@@ -134,7 +151,8 @@ function KycTable() {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                        Authorization: `Bearer ${token}`
+                    },
                 });
 
                 if (!res.ok) {
@@ -157,21 +175,25 @@ function KycTable() {
             }
         }
         fetchUsersKycs();
-    }, []);
+    }, [refecthHelp]);
 
     async function handleAcceptKyc() {
         try {
             setIsLoadingKyc(true);
-            setShowActionModal(false);
-            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/kycs/approve-kyc/${user?._id}/${selectedId}`, {
-                method: 'GET',
+            if(!adminPassword) throw new Error('Confirm Password!');
+
+            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/kycs/approve-kyc/${userKyc?.user?._id}/${selectedId}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ password: adminPassword })
             });
 
+
             if (!res.ok) {
-                throw new Error('Something went wrong!');
+                throw new Error((await res.json()).message || 'Something went wrong!');
             }
 
             const data = await res.json();
@@ -182,22 +204,73 @@ function KycTable() {
             }
 
             setIsSuccess(true);
-            setMessage(data.message);
-            setTimeout(function () {
+            setMessage(data?.message);
+            setTimeout(() => {
                 setIsSuccess(false);
                 setMessage("");
-                setShowModal(false)
+                setShowModal(false);
+                setShowActionModal(false);
+                setAction('')
+                setRefecthHelp(true)
             }, 1800);
 
         } catch (err) {
-            handleFailure(err)
+            handleFailure(err.message);
         } finally {
             setIsLoadingKyc(false);
-            setAction('')
+            setAdminPassword('')
         }
     }
 
-    function handleRejectKyc() { }
+    async function handleRejectKyc() {
+        try {
+            setIsLoadingKyc(true);
+            if(!adminPassword) throw new Error('Confirm Password!');
+            if(!reasonMessage) throw new Error('Give user a reason for rejection');
+
+            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/kycs/reject-kyc/${userKyc?.user?._id}/${selectedId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    password: adminPassword,
+                    reason: reasonMessage
+                })           
+            });
+
+            if (!res.ok) {
+                throw new Error((await res.json()).message || 'Something went wrong!');
+            }
+
+            const data = await res.json();
+            console.log(data);
+            if(data?.message === 'Incorrect password') {
+                setAdminPassword('');
+            }
+
+            if (data?.status !== 'success') {
+                throw new Error(data?.message);
+            }
+
+            setIsSuccess(true);
+            setMessage(data?.message);
+            setTimeout(() => {
+                setIsSuccess(false);
+                setMessage("");
+                setShowModal(false);
+                setShowActionModal(false);
+                setAction('');
+                setRefecthHelp(true);
+            }, 1800);
+
+        } catch (err) {
+            handleFailure(err.message);
+        } finally {
+            setIsLoadingKyc(false);
+        }
+    }
 
 
     const columns = [
@@ -247,7 +320,7 @@ function KycTable() {
     return (
         <>
             {isLoadingKyc && (
-                <Spinner />
+                <MainSpinner />
             )}
 
             <div className='dashboard_container'>
@@ -255,16 +328,15 @@ function KycTable() {
                     <span className="heading__text">Users Kyc</span>
                     <div className="dashboard-filter_tabs">
                         {/* <span className={`dashboard_tab ${filterTab === 'all' ? 'active' : ''}`} onClick={() => setFilterTab('all')}>All</span> */}
-                        <span className={`dashboard_tab active`} onClick={() => setFilterTab('all')}>All</span>
-                        <span className={`dashboard_tab`} onClick={() => setFilterTab('verified')}>Verifed Users</span>
-                        <span className={`dashboard_tab`} onClick={() => setFilterTab('premium')}>Preium Users</span>
-                        <span className={`dashboard_tab`} onClick={() => setFilterTab('vendors')}>Vendors</span>
+                        <span className={`dashboard_tab ${filterTab === 'all' ? 'active' : ''}`} onClick={() => setFilterTab('all')}>All</span>
+                        <span className={`dashboard_tab ${filterTab === 'pending' ? 'active' : ''}`} onClick={() => setFilterTab('pending')}>Pending</span>
+                        <span className={`dashboard_tab ${filterTab === 'approved' ? 'active' : ''}`} onClick={() => setFilterTab('approved')}>Approved</span>
+                        <span className={`dashboard_tab ${filterTab === 'rejected' ? 'active' : ''}`} onClick={() => setFilterTab('rejected')}>Rejected</span>
                     </div>
                 </div>
 
                 <DataTable
-                    // data={filterTab === "all" ? users : filterTab === "verified" ? verifiedUsers : filterTab === "premium" ? premiumUsers : filterTab === "vendors" ? vendors : ''}
-                    data={kycs}
+                    data={filterTab === "all" ? all : filterTab === "rejected" ? rejectedKyc : filterTab === "pending" ? pendingKyc : filterTab === "approved" ? approvedKyc : ''}
                     columns={columns}
                     pagination
                     customStyles={customStyles}
@@ -273,6 +345,7 @@ function KycTable() {
                     progressPending={isLoading}
                     progressComponent={<Spinner />}
                     paginationPerPage={20}
+                    noDataComponent={<Message />}
                 />
 
 
@@ -373,21 +446,15 @@ function KycTable() {
                                 <div className='details-documents'>
                                     <div className="">
                                         <p className='document--label'>ID Card Front Image</p>
-                                        {/* <a href={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.frontImg}`} target='_blank'> */}
                                         <Zoom>
                                             <img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.frontImg}`} alt="" />
-                                            {/* <span className='label-after'><MdOutlineAdsClick /></span> */}
                                         </Zoom>
-                                        {/* </a> */}
                                     </div>
                                     <div className="">
                                         <p className='document--label'>ID Card Back Image</p>
-                                        {/* <a href={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.backImg}`} target='_blank'> */}
                                         <Zoom>
                                             <img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.backImg}`} alt="" />
-                                            {/* <span className='label-after'><MdOutlineAdsClick /></span> */}
                                         </Zoom>
-                                        {/* </a> */}
                                     </div>
 
                                     <div className="">
@@ -422,11 +489,11 @@ function KycTable() {
                                                 </span>
                                             ) : (
                                                 <div>
-                                                    {userKyc?.utilityBill.endsWith('.pdf') ? (
-                                                        <a href={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.utilityBill}`} className='upload--btn'>View Utility Bill PDF</a>
+                                                    {userKyc?.acctStatement.endsWith('.pdf') ? (
+                                                        <a href={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.acctStatement}`} target='_blank' className='upload--btn'>View Account Statement PDF</a>
                                                     ) : (
                                                         <Zoom>
-                                                            <img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.utilityBill}`} target='_blank' className='upload--img' />
+                                                            <img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/kycs/${userKyc?.acctStatement}`} target='_blank' className='upload--img' />
                                                         </Zoom>
                                                     )}
                                                 </div>
@@ -453,9 +520,16 @@ function KycTable() {
                 {showActionModal && (
                     <DashboardModal customStyle={customStyleModal} title={`${capitalizeFirstLetter(action)} this KYC Document`} setShowDashboardModal={setShowActionModal} overLayZIndex={true} >
                         <p className='modal--text'>Are you sure you want to {action} this document?</p>
+                        <div className="form__item">
+                            <input type="password" id="password" className="form__input" placeholder='Confirm Your Password' value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)} />
+
+                            {action === 'reject' && (
+                                <textarea className='form__input' placeholder='Give a Reason' value={reasonMessage} onChange={(e) => setReasonMessage(e.target.value)}></textarea>
+                            )}
+                        </div>
                         <div className="sm-modal--actions" style={{ marginTop: '1.4rem' }}>
                             <button type='button' className='cancel--btn' onClick={() => setShowActionModal(false)}>Cancel</button>
-                            <button type='submit' className='approve--btn' onClick={() => action === 'reject' ? handleRejectKyc() : handleAcceptKyc()}>{capitalizeFirstLetter(action)} KYC</button>
+                            <button type='submit' className='approve--btn' onClick={action === 'reject' ? handleRejectKyc : handleAcceptKyc}>{capitalizeFirstLetter(action)} KYC</button>
                         </div>
                     </DashboardModal>
                 )}
@@ -463,15 +537,9 @@ function KycTable() {
 
             </div>
 
+            
             {(isError || isSuccess) && (
-                <Alert alertType={`${isSuccess ? "success" : isError ? "error" : ""}`}>
-                    {isSuccess ? (
-                        <AiFillCheckCircle className="alert--icon" />
-                    ) : isError && (
-                        <AiFillExclamationCircle className="alert--icon" />
-                    )}
-                    <p>{message}</p>
-                </Alert>
+                <Alert alertType={`${isSuccess ? "success" : "error"}`} message={message} />
             )}
 
         </>

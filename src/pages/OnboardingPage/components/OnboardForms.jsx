@@ -121,7 +121,7 @@ function OnboardForms() {
 							<>
 								<div className="form__item">
 									<label htmlFor="fullname" className="form__label">
-										Full Name
+										Vendor's Full Name
 									</label>
 									<input
 										value={fullname}
@@ -134,14 +134,14 @@ function OnboardForms() {
 								</div>
 								<div className="form__item">
 									<label htmlFor="username" className="form__label">
-										Store Name
+										Store Name / Username
 									</label>
 									<input
 										value={username}
 										onChange={(e) => setUsername(e.target.value)}
 										type="text"
 										id="username"
-										placeholder="Enter Store Name"
+										placeholder="Enter Store Name / Username"
 										className="form__input"
 									/>
 								</div>

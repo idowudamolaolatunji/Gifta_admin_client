@@ -3,7 +3,7 @@ import React from "react";
 import { AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Area } from "recharts";
 
 function ChartComponent({ transactions }) {
-	console.log(transactions)
+	// console.log(transactions)
 	const { deposits, withdrawals, subscriptions, giftings, wishes, orders, redeemed } = transactions
 	const data = [
 		{
@@ -53,7 +53,7 @@ function ChartComponent({ transactions }) {
 	return (
 		<AreaChart
 			width={870}
-			height={320}
+			height={380}
 			data={data}
 			margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
 		>

@@ -9,12 +9,15 @@ import { LuPackageOpen } from "react-icons/lu";
 
 import TransactionTable from "./TransactionTable";
 import Spinner from "../../../components/Spinner";
+import { numberFormatter } from "../../../utils/helper";
+import { useAuthContext } from "../../../context/AuthContext";
 
 
 
-function MainDashboard() {
+function MainDashboard({ setMainLoader }) {
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedTab, setSeletedTab] = useState('allTime')
+    const [selectedTab, setSeletedTab] = useState('allTime');
+    const [appProfit, setAppProfit] = useState(null);
     const [users, setUsers] = useState([]);
     const [reminders, setReminders] = useState([]);
     const [giftings, setGiftings] = useState([]);
@@ -22,6 +25,13 @@ function MainDashboard() {
     const [giftProducts, setGiftProducts] = useState([]);
     const [orders, setOrders] = useState([]);
     const vendors = users?.filter(user => user.role === 'vendor');
+
+    const { token } = useAuthContext();
+
+    const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+    };
     
     useEffect(function() {
         async function dashboardFetch() {
@@ -29,8 +39,9 @@ function MainDashboard() {
                 setIsLoading(true);
 
                 // const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes, ordersRes] = await Promise.all([
-                const [usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes] = await Promise.all([
-                    await fetch(`${import.meta.env.VITE_SERVER_URL}/users/`),
+                const [profitRes, usersRes, remindersRes, giftingsRes, wishListsRes, giftProductsRes] = await Promise.all([
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/wallet/profit`, { headers }),
+                    await fetch(`${import.meta.env.VITE_SERVER_URL}/users/`, { headers }),
                     await fetch(`${import.meta.env.VITE_SERVER_URL}/reminders/every-reminder`),
                     await fetch(`${import.meta.env.VITE_SERVER_URL}/giftings/`),
                     await fetch(`${import.meta.env.VITE_SERVER_URL}/wishlists/`),
@@ -39,10 +50,11 @@ function MainDashboard() {
                 ]);
 
                 // if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok || !ordersRes.ok) {
-                if(!usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok) {
+                if(!profitRes.ok || !usersRes.ok || !remindersRes.ok || !giftingsRes.ok || !wishListsRes.ok || !giftProductsRes.ok) {
                     throw new Error('Something went wrong!');
                 }
 
+                const profitData = await profitRes.json();
                 const usersData = await usersRes.json();
                 const remindersData = await remindersRes.json();
                 const giftingsData = await giftingsRes.json();
@@ -50,6 +62,7 @@ function MainDashboard() {
                 const giftProductsData = await giftProductsRes.json();
                 // const ordersData = await ordersRes.json();
 
+                setAppProfit(profitData.data.profit);
                 setUsers(usersData.data.users);
                 setReminders(remindersData.data.reminders);
                 setGiftings(giftingsData.data.giftings);
@@ -91,7 +104,7 @@ function MainDashboard() {
                             <span className="insight__icon"><LiaMoneyBillWaveSolid className="icon" /></span>
                             <span className="insight__details">
                                 <p>Profits</p>
-                                <p>₦0.00</p>
+                                <p>₦{numberFormatter(appProfit?.balance) || '0.00'}</p>
                             </span>
                         </div>
                         <div className="insight">
@@ -146,7 +159,7 @@ function MainDashboard() {
                     </div>
                 )}
 
-                <TransactionTable />
+                <TransactionTable setMainLoader={setMainLoader} />
 
 			</div>
 		</div>

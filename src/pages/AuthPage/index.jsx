@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./main.css";
 import Spinner from "../../components/Spinner";
-
-import { AiFillCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
-
 import Logo from "../../assets/image/logo-full.png";
 import { useAuthContext } from "../../context/AuthContext";
 import Alert from "../../components/Alert";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function index() {
 	const [email, setEmail] = useState("");
@@ -129,16 +126,9 @@ function index() {
 				</div>
 			</div>
 
-			<Alert alertType={`${isSuccess ? "success" : isError ? "error" : ""}`}>
-				{isSuccess ? (
-					<AiFillCheckCircle className="alert--icon" />
-				) : isError ? (
-					<AiFillExclamationCircle className="alert--icon" />
-				) : (
-					""
-				)}
-				<p>{message}</p>
-			</Alert>
+			{(isError || isSuccess) && (
+                <Alert alertType={`${isSuccess ? "success" : isError ? "error" : ""}`} message={message} />
+			)}
 		</>
 	);
 }

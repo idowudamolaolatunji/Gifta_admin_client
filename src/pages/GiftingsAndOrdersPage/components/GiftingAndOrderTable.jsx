@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { dateConverter, numberFormatter } from "../../../utils/helper";
+import { dateConverter, numberFormatter, truncate } from "../../../utils/helper";
 import Spinner from "../../../components/Spinner";
 
 const customStyles = {
@@ -24,7 +24,11 @@ function GiftingTable() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [giftings, setGiftings] = useState([]);
 
+	// const all 
 
+	function Message() {
+        return (<p className="no--message" style={{ margin: '2rem auto' }}>No {filterTab === 'all' ? 'Gifting' : `${filterTab} Gifting`}</p>) 
+    }
 
 	useEffect(function() {
 		async function fetchGiftings() {
@@ -75,20 +79,27 @@ function GiftingTable() {
 			selector: (row) => row?.gifter?.email,
 		},
 		{
-			name: "Celebrant Name",
-			selector: (row) => row?.celebrant,
-		},
+			name: "Celebrant or Event",
+			selector: (row) =>{
+				return (
+                    <div className='table-flex table-image-user'>
+                        <img src={row?.celebrantImage ? `${import.meta.env.VITE_SERVER_ASSET_URL}/others/${row?.celebrantImage}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.fullName || row.username} />
+                        <p>{truncate(row?.celebrant, 15)}</p>
+                    </div>
+                )
+			},
+        },
 		{
 			name: "Price",
 			selector: (row) => `${numberFormatter(row?.amount)}`,
 		},
 		{
-			name: "State",
-			selector: (row) => row?.state,
+			name: "Location",
+			selector: (row) => row?.state + ', ' + row?.country || 'Nigeria',
 		},
 		{
 			name: "Delivary Date",
-			selector: (row) => dateConverter(row?.date),
+			selector: (row) => dateConverter(row?.createdAt),
 		},
 	];
 
@@ -112,6 +123,7 @@ function GiftingTable() {
 				progressPending={isLoading}
 				persistTableHead
 				progressComponent={<Spinner />}
+				noDataComponent={<Message />}
 			/>
 		</div>
 	);
@@ -123,7 +135,9 @@ function OrderTable() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [orders, setOrders] = useState([]);
 
-
+	function Message() {
+        return (<p className="no--message" style={{ margin: '2rem auto' }}>No {filterTab === 'all' ? 'Order' : `${filterTab} Order`}</p>) 
+    }
 
 	useEffect(function() {
 		async function fetchOrders() {
@@ -164,7 +178,7 @@ function OrderTable() {
 			selector: (row) => {
 				return (
 					<div className="table-flex table-product">
-						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/others/${row?.gift?.image}`} alt={row?.gift?.name} />
+						<img src={`${import.meta.env.VITE_SERVER_ASSET_URL}/products/${row?.gift?.images[0]}`} alt={row?.gift?.name} />
 						<p>{row?.gift?.name}</p>
 					</div>
 				);
@@ -175,24 +189,31 @@ function OrderTable() {
 			selector: (row) => row?.gifter?.email,
 		},
 		{
-			name: "Celebrant Name",
-			selector: (row) => row?.celebrant,
-		},
+			name: "Celebrant or Event",
+			selector: (row) =>{
+				return (
+                    <div className='table-flex table-image-user'>
+                        <img src={row?.celebrantImage ? `${import.meta.env.VITE_SERVER_ASSET_URL}/others/${row?.celebrantImage}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={row.fullName || row.username} />
+                        <p>{truncate(row?.celebrant, 15)}</p>
+                    </div>
+                )
+			},
+        },
 		{
 			name: "Price",
 			selector: (row) => row?.amount,
 		},
-		{
-			name: "State",
-			selector: (row) => row?.state,
-		},
+		// {
+		// 	name: "State",
+		// 	selector: (row) => row?.state,
+		// },
 		{
 			name: "Order Date",
 			selector: (row) => dateConverter(row?.createdAt),
 		},
 		{
 			name: "Delivery Stat",
-			selector: (row) => row?.isDelivered,
+			selector: (row) => row?.status,
 		},
 	];
 
@@ -216,6 +237,7 @@ function OrderTable() {
 				progressPending={isLoading}
 				persistTableHead
 				progressComponent={<Spinner />}
+				noDataComponent={<Message />}
 			/>
 		</div>
 	)

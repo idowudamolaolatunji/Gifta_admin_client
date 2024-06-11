@@ -48,6 +48,7 @@
 .form__input {
     padding: 1.2rem;
     border-radius: .6rem;
+    font-family: inherit;
     color: #555;
     border: 1.2px solid #ccc;
     transition: all .35s;

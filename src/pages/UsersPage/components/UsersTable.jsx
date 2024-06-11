@@ -36,8 +36,9 @@ function UsersTable() {
                 const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json',
-                    }
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`
+					}
                 });
 
                 if (!res.ok) {
