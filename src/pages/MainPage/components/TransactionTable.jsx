@@ -8,6 +8,10 @@ import Alert from '../../../components/Alert';
 import DashboardModal from '../../../components/DashboardModal';
 import MiniSpinner from '../../../components/MiniSpinner';
 import { useAuthContext } from '../../../context/AuthContext';
+import { IoCopyOutline } from 'react-icons/io5';
+// import Collapsible from 'react-collapsible';
+import { MdArrowDropDown } from 'react-icons/md';
+
 
 const customStyles = {
 	head: {
@@ -31,9 +35,9 @@ const customStyleModal = {
     zIndex: 300000
 };
 
-function TransactionTable({ setMainLoader }) {
+function TransactionTable() {
 	const [transactions, setTransactions] = useState([]);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [filterTab, setFilterTab] = useState('all');
 	const [showModal, setShowModal] = useState(false);
 	const [showActionModal, setShowActionModal] = useState(false);
@@ -45,14 +49,17 @@ function TransactionTable({ setMainLoader }) {
     const [refecthHelp, setRefecthHelp] = useState(false);
 
 	const [adminPassword, setAdminPassword] = useState('');
+	const [reasonMessage, setReasonMessage] = useState('');
 	const [isLoadingDoc, setIsLoadingDoc] = useState(true);
 	///////////////////////////////////////////////////////////////////
+	const [isLoadingbtn, setIsLoadingbtn] = useState(false);
 	const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 	const [selectedTransactionUserId, setSelectedTransactionUserId] = useState(null);
 	const [seletedTransactionType, setSelectedTransactionType] = useState('');
 	const [seletedUserName, setSelectedUserName] = useState('');
 	///////////////////////////////////////////////////////////////////
 	const [userTransaction, setUserTransaction] = useState(null);
+	const [user, setUser] = useState(null);
 
 	const deposits = transactions?.filter(transaction => transaction.purpose === 'deposit')
 	const withdrawals = transactions?.filter(transaction => transaction.purpose === 'withdrawal')
@@ -84,6 +91,41 @@ function TransactionTable({ setMainLoader }) {
         setAction(type);
     }
 
+	function handleCopyContent(data, text) {
+		navigator.clipboard.writeText(data);
+		setIsSuccess(true);
+        setMessage(`${text} Copied!`)
+        setTimeout(() => {
+            setIsSuccess(false);
+            setMessage('')
+        }, 1500);
+	}
+
+	function handleFailure(mess) {
+        setIsError(true);
+        setMessage(mess);
+        setTimeout(function () {
+            setIsError(false);
+            setMessage("");
+        }, 2000);
+    }
+
+	useEffect(function () {
+        if (!showModal) {
+			setSelectedTransactionId(null)
+			setSelectedTransactionUserId(null)
+			setSelectedTransactionType('')
+			setSelectedUserName('')
+			setUserTransaction(null);
+			setAction('')
+        }
+        if(!showActionModal) {
+            setAdminPassword('');
+            setReasonMessage('');
+        }
+        // setRefecthHelp(false);
+    }, [showModal, showActionModal]);
+
 	useEffect(function() {
 		async function handleFetchUserTransaction() {
 			try {
@@ -110,6 +152,36 @@ function TransactionTable({ setMainLoader }) {
 
 		if (showModal) {
 			handleFetchUserTransaction()
+		}
+	} , [showModal]);
+
+
+	useEffect(function() {
+		async function handleFetchUserById() {
+			try {
+				setIsLoadingDoc(true)
+				const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/${selectedTransactionUserId}`, {
+					method: 'GET',
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`
+					}
+				});
+
+				if(!res.ok) throw new Error('Something went wrong!');
+				const data = await res.json();
+				setUser(data?.data?.user);
+	
+			} catch(err) {
+				console.log(err);
+			} finally {
+				setIsLoading(false)
+				setIsLoadingDoc(false)
+			}
+		}
+
+		if (showModal) {
+			handleFetchUserById()
 		}
 	} , [showModal]);
 
@@ -144,7 +216,47 @@ function TransactionTable({ setMainLoader }) {
 			}
 		}
 		fetchTransactions();
-	}, [])
+	}, [refecthHelp]);
+
+	// :id
+
+	async function handleApproveWithdrawalRequest() {
+		try {
+			setIsLoadingbtn(true);
+
+			if(!adminPassword) throw new Error('Confirm Password!');
+			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/transactions/withdrawal-approval/${selectedTransactionId}`, {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
+				},
+				body: JSON.stringify({ password: adminPassword })
+			});
+
+			if(!res.ok) {
+				throw new Error('Something went wrong!');
+			}
+			const data = await res.json();
+			if(data.status !== 'success') {
+				throw new Error(data?.message)
+			}
+			setIsSuccess(true);
+			setMessage(data?.message)
+			setTimeout(() => {
+				setIsSuccess(false);
+				setMessage('');
+				setShowModal(false);
+				setShowActionModal(false);
+				setRefecthHelp(true);
+			}, 1500);
+
+		} catch(err) {
+			handleFailure(err.message)
+		} finally {
+			setIsLoadingbtn(false)
+		}
+	}
 
 
     const columns = [
@@ -233,7 +345,7 @@ function TransactionTable({ setMainLoader }) {
                                 <MiniSpinner />
                             )}
 
-							{(!isLoadingDoc && useTransition) && (
+							{(!isLoadingDoc && userTransaction) && (
 								<div className='content-top'>
 									<img src={userTransaction?.user?.image ? `${import.meta.env.VITE_SERVER_ASSET_URL}/users/${userTransaction?.user?.image}` : 'https://res.cloudinary.com/dy3bwvkeb/image/upload/v1701957741/avatar_unr3vb-removebg-preview_rhocki.png'} alt={userTransaction?.user?.username} className='content-img' />
 
@@ -246,7 +358,11 @@ function TransactionTable({ setMainLoader }) {
 											</span>
 											<span>
 												<p>Reference Id: </p>
-												<p>{userTransaction?.reference}</p>
+												<div>
+													<p>{userTransaction?.reference}</p>
+													<IoCopyOutline onClick={() => handleCopyContent(userTransaction?.reference, 'Refernce Id')} className='content--icon' />
+												</div>
+
 											</span>
 											<span>
 												<p>Status: </p>
@@ -262,23 +378,35 @@ function TransactionTable({ setMainLoader }) {
 												<p>Purpose: </p>
 												<p>{userTransaction?.purpose}</p>
 											</span>
+											{(!isLoadingDoc && (seletedTransactionType === 'withdrawal')) && (
+												<span style={{ gap: '1rem' }}>
+													<IoCopyOutline style={{ cursor: 'pointer' }} onClick={() => handleCopyContent(`
+													The account details for
+													${user?.holderName}
+													${user?.bankName}
+													${user?.acctNumber}
+													`, 'Bank Details')} className='content--icon' />
+													<p>Copy Bank Details</p>
+												</span>
+											)}
 										</div>
 									</span>
 								</div>
 							)}
                         </div>
 
-                        {(!isLoadingDoc && (seletedTransactionType === 'withdrawal')) && (
+
+                        {(!isLoadingDoc && (seletedTransactionType === 'withdrawal') && userTransaction?.status === 'pending') && (
                             <div className={`modal--action action--flex ${seletedTransactionType !== 'withdrawal' ? 'action-not-shown' : ''}`} style={{ marginTop: '1.2rem' }}>
-                                <button className='action--btn action--btn-reject' onClick={() => handleShowActionModal('decline')}>Decline {capitalizeFirstLetter(action)}</button>
-                                <button className='action--btn action--btn-accept' onClick={() => handleShowActionModal('approve')}>Approve {capitalizeFirstLetter(action)}</button>
+                                <button className='action--btn action--btn-reject' onClick={() => handleShowActionModal('decline')}>Decline Withdrawal</button>
+                                <button className='action--btn action--btn-accept' onClick={() => handleShowActionModal('approve')}>Approve Withdrawal</button>
                             </div>
                         )}
                     </DashboardModal>
 			)}
 
 
-			{showActionModal && (
+			{(showActionModal && action === 'approve') && (
 				<DashboardModal customStyle={customStyleModal} title={`${capitalizeFirstLetter(action)} this Withdrawal`} setShowDashboardModal={setShowActionModal} overLayZIndex={true} >
 					<p className='modal--text'>Are you sure you want to {action} this Withdrawal?</p>
 					<div className="form__item">
@@ -290,7 +418,9 @@ function TransactionTable({ setMainLoader }) {
 					</div>
 					<div className="sm-modal--actions" style={{ marginTop: '1.4rem' }}>
 						<button type='button' className='cancel--btn' onClick={() => setShowActionModal(false)}>Cancel</button>
-						<button type='submit' className='approve--btn' onClick={''}>{capitalizeFirstLetter(action)} Withdrawal</button>
+						<button type='submit' className='approve--btn' onClick={handleApproveWithdrawalRequest}>{isLoadingbtn ? (
+							<div className="spinner-btn"></div>
+						) : 'OK!'}</button>
 					</div>
 				</DashboardModal>
 			)}

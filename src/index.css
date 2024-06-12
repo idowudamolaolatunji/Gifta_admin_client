@@ -380,6 +380,20 @@ textarea {
 	align-items: center;
 	gap: 1.6rem;
 }
+.details-left span div {
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	cursor: pointer;
+}
+.content--icon {
+	font-size: 1.6rem;
+	color: #555;
+	transition: all .35s;
+}
+.content--icon:hover {
+	color: #bb0505;
+}
 .details-left span p:first-child,
 .details-other span p:first-child {
 	font-weight: 600;

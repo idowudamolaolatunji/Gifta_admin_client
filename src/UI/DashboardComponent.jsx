@@ -36,7 +36,7 @@ function DashboardComponent({ children }) {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     console.log(pathname)
-	const { logout } = useAuthContext();
+	const { logout, admin, token } = useAuthContext();
 
 
 	function handleLogout () {
@@ -88,18 +88,17 @@ function DashboardComponent({ children }) {
 					<li className={`sidebar--item ${pathname ==='/giftings-and-orders' ? 'sidebar--active' : ''}`} onClick={() => navigate("/giftings-and-orders")} >
 						<TfiGift className="sidebar--icon" /> Giftings & Orders
 					</li>
-					<li className={`sidebar--item ${pathname ==='/onboarding' ? 'sidebar--active' : ''}`} onClick={() => navigate("/onboarding")} >
-						<TbUsersPlus className="sidebar--icon" /> Onboarding
-					</li>
+					{admin.role === 'admin' && (
+						<li className={`sidebar--item ${pathname ==='/onboarding' ? 'sidebar--active' : ''}`} onClick={() => navigate("/onboarding")} >
+							<TbUsersPlus className="sidebar--icon" /> Onboarding
+						</li>
+					)}
 					<li className={`sidebar--item ${pathname ==='/kycs' ? 'sidebar--active' : ''}`} onClick={() => navigate("/kycs")} >
 						<HiOutlineIdentification className="sidebar--icon" /> KYC
 					</li>
 					<li className={`sidebar--item ${pathname ==='/categories' ? 'sidebar--active' : ''}`} onClick={() => navigate("/categories")} >
 						<HiOutlineIdentification className="sidebar--icon" /> Add Categories
 					</li>
-					{/* <li className={`sidebar--item ${activeNavTab.includes('settings') ? 'sidebar--active' : ''}`} onClick={() => navigate("/settings")} >
-						<RxGear className="sidebar--icon" /> Settings
-					</li> */}
 				</ul>
 			</menu>
 

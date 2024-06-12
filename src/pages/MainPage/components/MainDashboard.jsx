@@ -14,7 +14,7 @@ import { useAuthContext } from "../../../context/AuthContext";
 
 
 
-function MainDashboard({ setMainLoader }) {
+function MainDashboard() {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedTab, setSeletedTab] = useState('allTime');
     const [appProfit, setAppProfit] = useState(null);
@@ -159,7 +159,7 @@ function MainDashboard({ setMainLoader }) {
                     </div>
                 )}
 
-                <TransactionTable setMainLoader={setMainLoader} />
+                <TransactionTable />
 
 			</div>
 		</div>

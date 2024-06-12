@@ -4,20 +4,12 @@ import DashboardComponent from '../../UI/DashboardComponent'
 import Spinner from '../../components/Spinner';
 
 function index() {
-    const [mainLoader, setMainLoader] = useState(false);
 
     return (
-        <>
-            {mainLoader && (
-                <div className="overlay">
-                    <Spinner />
-                </div>
-            )}
+        <DashboardComponent>
+            <MainDashboard />
+        </DashboardComponent>
 
-            <DashboardComponent>
-                <MainDashboard setMainLoader={setMainLoader} />
-            </DashboardComponent>
-        </>
     )
 }
 

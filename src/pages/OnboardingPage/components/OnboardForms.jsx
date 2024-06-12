@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { AiFillCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
 import Spinner from "../../../components/Spinner";
 import Alert from "../../../components/Alert";
+import { useAuthContext } from "../../../context/AuthContext";
 
 function OnboardForms() {
 	const [fullname, setFullname] = useState("");
@@ -18,7 +19,8 @@ function OnboardForms() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [tab, setTab] = useState('vendor')
 
-	// /signup-vendor
+	const { token } = useAuthContext();
+
 
 	function handleCancel() {
 		setEmail("");
@@ -33,6 +35,15 @@ function OnboardForms() {
 		setIsSuccess(false);
 		setMessage("");
 	}
+
+	function handleFailure(mess) {
+        setIsError(true);
+        setMessage(mess);
+        setTimeout(function () {
+            setIsError(false);
+            setMessage("");
+        }, 2000);
+    }
 
 	function validate(e) {
 		e.preventDefault();
@@ -55,10 +66,14 @@ function OnboardForms() {
 			setIsLoading(true);
 			handleReset();
 
-			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/signup-vendor`, {
+			if(!email || !username || !fullname || !password || !passwordConfirm) {
+				throw new Error('All fields are required!')
+			}
+			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/create-vendor`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
 				},
 				body: JSON.stringify({
 					email,
@@ -86,12 +101,52 @@ function OnboardForms() {
 				setMessage("");
 			}, 1200);
 		} catch (err) {
-			setIsError(true);
-			setMessage(err.message);
+			handleFailure(err.message);
+		} finally {
+			setIsLoading(false);
+			handleCancel();
+		}
+	}
+
+	async function handleCreateVendors(e) {
+		try {
+			setIsLoading(true);
+			handleReset();
+
+			if(!email || !adminType || !fullname || !password || !passwordConfirm) {
+				throw new Error('All fields are required!')
+			}
+			const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/create-admin`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
+				},
+				body: JSON.stringify({
+					email,
+					role: adminType,
+					fullName: fullname,
+					password,
+					passwordConfirm,
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error("Something went wrong!");
+			}
+			const data = await res.json();
+			if (data.status !== "success") {
+				throw new Error(data.message);
+			}
+
+			setIsSuccess(true);
+			setMessage(data.message);
 			setTimeout(function () {
-				setIsError(false);
+				setIsSuccess(false);
 				setMessage("");
-			}, 2000);
+			}, 1200);
+		} catch (err) {
+			handleFailure(err.message)
 		} finally {
 			setIsLoading(false);
 			handleCancel();
@@ -231,16 +286,9 @@ function OnboardForms() {
 				</div>
 			</div>
 
-			<Alert alertType={`${isSuccess ? "success" : isError ? "error" : ""}`}>
-				{isSuccess ? (
-					<AiFillCheckCircle className="alert--icon" />
-				) : isError ? (
-					<AiFillExclamationCircle className="alert--icon" />
-				) : (
-					""
-				)}
-				<p>{message}</p>
-			</Alert>
+			{(isError || isSuccess) && (
+                <Alert alertType={`${isSuccess ? "success" : "error"}`} message={message} />
+            )}
 		</>
 	);
 }

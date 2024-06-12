@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from 'react-data-table-component';
 import { dateConverter, truncate } from '../../../utils/helper.js';
 import Spinner from '../../../components/Spinner.jsx';
+import { useAuthContext } from '../../../context/AuthContext.jsx';
 
 
 const customStyles = {
@@ -21,13 +22,18 @@ const customStyles = {
 
 function UsersTable() {
     const [users, setUsers] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [filterTab, setFilterTab] = useState('all');
 
     const verifiedUsers = users?.filter(user => user.isKycVerified === true);
     const premiumUsers = users?.filter(user => user.isPremium === true);
     const vendors = users?.filter(user => user.role === 'vendor');
 
+    const { token } = useAuthContext();
+
+    function Message() {
+        return (<p className="no--message" style={{ margin: '2rem auto' }}>No {filterTab !== 'all' ? filterTab : ''} document</p>);
+    }
 
     useEffect(function () {
         async function fetchUsers() {
@@ -124,6 +130,7 @@ function UsersTable() {
                 persistTableHead
                 progressPending={isLoading}
                 progressComponent={<Spinner />}
+                noDataComponent={<Message />}
                 paginationPerPage={25}
             />
 

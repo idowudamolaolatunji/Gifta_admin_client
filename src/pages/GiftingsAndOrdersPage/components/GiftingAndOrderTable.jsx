@@ -91,7 +91,8 @@ function GiftingTable() {
         },
 		{
 			name: "Price",
-			selector: (row) => `${numberFormatter(row?.amount)}`,
+			selector: (row) => `₦${numberFormatter(row?.amount)}`,
+			width: '120px'
 		},
 		{
 			name: "Location",
@@ -201,7 +202,8 @@ function OrderTable() {
         },
 		{
 			name: "Price",
-			selector: (row) => row?.amount,
+			selector: (row) => `₦${numberFormatter(row?.amount)}`,
+			width: '120px'
 		},
 		// {
 		// 	name: "State",
